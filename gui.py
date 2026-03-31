@@ -9,6 +9,9 @@ import win32con
 import os
 import webbrowser
 from PIL import Image, ImageTk
+from i18n_manager import I18nManager
+from config_manager import Config
+
 
 ctk.set_appearance_mode("Dark")  
 ctk.set_default_color_theme("blue")  
@@ -96,6 +99,7 @@ class SettingsWindow(ctk.CTkToplevel):
 
 
 class OrganizerGUI:
+    
     def __init__(self, app_controller):
         self.app = app_controller
         self.root = ctk.CTk()
@@ -112,7 +116,9 @@ class OrganizerGUI:
         self.root.attributes("-topmost", True)
         self.root.protocol("WM_DELETE_WINDOW", self.hide_to_tray)
         self.original_app_refresh = self.app.refresh
+
         
+
         if os.path.exists("logo.ico"):
             try: self.root.iconbitmap("logo.ico")
             except: pass
@@ -279,14 +285,12 @@ class OrganizerGUI:
             self.settings_window.focus_force()
 
     def launch_tutorial(self):
+        
         if not self.app.config.data.get("tutorial_done", False):
             self.app.config.data["tutorial_done"] = True
             self.app.config.save()
-            
-        rep = messagebox.askyesno(
-            self.app.i18n.t("dialog_tutorial_title", "Tutoriel Vidéo"),
-            self.app.i18n.t("dialog_tutorial_text", "Voulez-vous ouvrir la vidéo de présentation sur YouTube dans votre navigateur web ?")
-        )
+
+        rep = messagebox.askyesno(self.app.i18n.t("dialog_tutorial_title", "Tutoriel Vidéo"),self.app.i18n.t("dialog_tutorial_text", "Voulez-vous ouvrir la vidéo de présentation sur YouTube dans votre navigateur web ?"),self.app.i18n.t("button_yes", "Oui"),self.app.i18n.t("button_no", "Non"))
         if rep:
             webbrowser.open("")
 
@@ -608,10 +612,7 @@ class OrganizerGUI:
         self.original_app_refresh()
 
     def reset_all(self):
-        reponse = messagebox.askyesno(
-            self.app.i18n.t("dialog_confirm_title", "Confirmation"),
-            self.app.i18n.t("dialog_reset_text", "Êtes-vous sûr de vouloir tout réinitialiser ?\n\nToutes vos touches seront perdues.")
-        )
+        reponse = messagebox.askyesno(self.app.i18n.t("dialog_confirm_title", "Confirmation"),self.app.i18n.t("dialog_reset_text", "Êtes-vous sûr de vouloir tout réinitialiser ?\n\nToutes vos touches seront perdues."))  
         if reponse:
             self.app.config.reset_settings()
             self.original_app_refresh()

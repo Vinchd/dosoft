@@ -1,5 +1,5 @@
 {
-  "app_title": "DOSOFT v1.1.1",
+  "app_title": "DOSOFT v1.2.0",
   "settings_title": "⚙️ Paramètres",
   "settings_close": "Fermer",
   "settings_radial": "Roue de Focus (Radiale)",
@@ -71,5 +71,9 @@
   "version_update_required_title": "Mise à jour requise",
   "version_update_required_text": "Une mise à jour est requise pour utiliser le logiciel.\n\nVotre version : {current_version}\nVersion disponible : {latest_version}\n\nMise à jour dispo sur Dosoft.fr",
   "version_network_error_title": "Erreur réseau",
-  "version_network_error_text": "Impossible de vérifier la version."
+  "version_network_error_text": "Impossible de vérifier la version.",
+  "header_instace_off": "Instance détectée",
+  "button_yes": "Oui",
+  "button_no": "Non",
+  "popup_conflict_instance_text": "Une instance de DOSOFT est déjà en cours d'exécution !\n\nVoulez-vous fermer l'ancienne instance pour ouvrir celle-ci ?"
 }
