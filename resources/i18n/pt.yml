@@ -13,5 +13,13 @@
   "header_off": "🔴 OFF",
   "label_controls": "Controlar:",
   "label_versions": "Versões:",
-  "label_keyboard_shortcuts": "Atalhos de Teclado"
+  "label_keyboard_shortcuts": "Atalhos de Teclado",
+  "label_volume": "🔊 Volume da Roda:",
+  "btn_close_team": "Fechar Time",
+  "btn_reset_settings": "Resetar Configs",
+  "label_active_accounts": "Contas ativas",
+  "btn_refresh": "Atualizar",
+  "btn_sort_taskbar": "Ordenar Barra do Windows",
+  "label_tooltips": "Dicas",
+  "btn_hide_ui": "Ocultar UI"
 }

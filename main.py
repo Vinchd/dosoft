@@ -204,8 +204,24 @@ class OrganizerApp:
         if not hk_str: return False
         parts = hk_str.split('+')
         for p in parts:
-            vk = self.get_vk(p)
-            if vk is None or win32api.GetAsyncKeyState(vk) >= 0:
+            token = p.lower().strip()
+            if token in {"ctrl", "alt", "shift"}:
+                vk = self.get_vk(token)
+                if vk is None or win32api.GetAsyncKeyState(vk) >= 0:
+                    return False
+                continue
+
+            mouse_vk = self.get_vk(token) if "click" in token or "mouse" in token else None
+            if mouse_vk is not None:
+                if win32api.GetAsyncKeyState(mouse_vk) >= 0:
+                    return False
+                continue
+
+            scan_code = self.keymaps.resolve_scan_code(token)
+            if scan_code is not None:
+                if not keyboard.is_pressed(scan_code):
+                    return False
+            elif not keyboard.is_pressed(token):
                 return False
         return True
 

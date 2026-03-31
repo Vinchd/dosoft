@@ -13,5 +13,13 @@
   "header_off": "🔴 OFF",
   "label_controls": "Control:",
   "label_versions": "Versions:",
-  "label_keyboard_shortcuts": "Keyboard Shortcuts"
+  "label_keyboard_shortcuts": "Keyboard Shortcuts",
+  "label_volume": "🔊 Wheel Volume:",
+  "btn_close_team": "Close Team",
+  "btn_reset_settings": "Reset Settings",
+  "label_active_accounts": "Active accounts",
+  "btn_refresh": "Refresh",
+  "btn_sort_taskbar": "Sort Taskbar",
+  "label_tooltips": "Tooltips",
+  "btn_hide_ui": "Hide UI"
 }

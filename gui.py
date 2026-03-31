@@ -79,9 +79,7 @@ class SettingsWindow(ctk.CTkToplevel):
         self.parent.apply_translations()
 
         if previous_language != self.var_language.get():
-            # Reconstruit la fenêtre des paramètres pour appliquer les nouveaux libellés immédiatement.
-            self.destroy()
-            self.parent.open_settings()
+            self.title(self.app.i18n.t("settings_title", "⚙️ Paramètres"))
 
 
 class OrganizerGUI:
@@ -177,24 +175,24 @@ class OrganizerGUI:
         self.frame_actions = ctk.CTkFrame(self.root)
         self.frame_actions.pack(fill="x", padx=15, pady=5)
 
-        lbl_vol = ctk.CTkLabel(self.frame_actions, text="🔊 Volume Roulette :")
-        lbl_vol.pack(side="left", padx=10)
+        self.lbl_volume = ctk.CTkLabel(self.frame_actions, text=self.app.i18n.t("label_volume", "🔊 Volume Roulette :"))
+        self.lbl_volume.pack(side="left", padx=10)
         self.slider_volume = ctk.CTkSlider(self.frame_actions, from_=0, to=100, command=self.on_volume_change, width=150)
         self.slider_volume.set(cfg.get("volume_level", 50))
         self.slider_volume.pack(side="left", padx=10, pady=10)
         
-        btn_close_all = ctk.CTkButton(self.frame_actions, text="Fermer Team", fg_color="#c0392b", hover_color="#e74c3c", command=self.close_all_and_refresh, width=120)
-        btn_close_all.pack(side="right", padx=10)
+        self.btn_close_all = ctk.CTkButton(self.frame_actions, text=self.app.i18n.t("btn_close_team", "Fermer Team"), fg_color="#c0392b", hover_color="#e74c3c", command=self.close_all_and_refresh, width=120)
+        self.btn_close_all.pack(side="right", padx=10)
         
-        btn_reset = ctk.CTkButton(self.frame_actions, text="Reset Settings", fg_color="#7f8c8d", hover_color="#95a5a6", command=self.reset_all, width=120)
-        btn_reset.pack(side="right", padx=10)
+        self.btn_reset = ctk.CTkButton(self.frame_actions, text=self.app.i18n.t("btn_reset_settings", "Reset Settings"), fg_color="#7f8c8d", hover_color="#95a5a6", command=self.reset_all, width=120)
+        self.btn_reset.pack(side="right", padx=10)
 
         # --- NOUVEAU DESIGN : Barre Comptes Actifs avec Binds Avancés ---
         pill_frame = ctk.CTkFrame(self.root, fg_color="#3b4252", corner_radius=8)
         pill_frame.pack(fill="x", padx=15, pady=(10, 0), ipadx=5, ipady=2)
 
-        lbl_accounts = ctk.CTkLabel(pill_frame, text="Comptes actifs", font=ctk.CTkFont(size=13, weight="normal"), text_color="#ecf0f1")
-        lbl_accounts.pack(side="left", padx=10, pady=4)
+        self.lbl_accounts = ctk.CTkLabel(pill_frame, text=self.app.i18n.t("label_active_accounts", "Comptes actifs"), font=ctk.CTkFont(size=13, weight="normal"), text_color="#ecf0f1")
+        self.lbl_accounts.pack(side="left", padx=10, pady=4)
 
         btn_manage_binds = ctk.CTkButton(pill_frame, text="⚙️", width=28, height=28, 
                                         fg_color="#2c3e50", hover_color="#1a252f", corner_radius=6,
@@ -209,17 +207,17 @@ class OrganizerGUI:
         self.frame_footer = ctk.CTkFrame(self.root, fg_color="transparent")
         self.frame_footer.pack(side="bottom", fill="x", padx=15, pady=(0, 15))
         
-        btn_refresh = ctk.CTkButton(self.frame_footer, text="Rafraîchir", command=self.original_app_refresh, width=80)
-        btn_refresh.pack(side="left")
+        self.btn_refresh = ctk.CTkButton(self.frame_footer, text=self.app.i18n.t("btn_refresh", "Rafraîchir"), command=self.original_app_refresh, width=80)
+        self.btn_refresh.pack(side="left")
 
-        self.btn_sort_win = ctk.CTkButton(self.frame_footer, text="Trier Barre Windows", fg_color="#8e44ad", hover_color="#9b59b6", command=self.trigger_sort_taskbar, width=120)
+        self.btn_sort_win = ctk.CTkButton(self.frame_footer, text=self.app.i18n.t("btn_sort_taskbar", "Trier Barre Windows"), fg_color="#8e44ad", hover_color="#9b59b6", command=self.trigger_sort_taskbar, width=120)
         self.btn_sort_win.pack(side="left", padx=5)
         
-        chk_tooltips = ctk.CTkCheckBox(self.frame_footer, text="Bulles", variable=self.var_tooltips, command=self.toggle_tooltips_setting, width=60)
-        chk_tooltips.pack(side="left", padx=15)
+        self.chk_tooltips = ctk.CTkCheckBox(self.frame_footer, text=self.app.i18n.t("label_tooltips", "Bulles"), variable=self.var_tooltips, command=self.toggle_tooltips_setting, width=60)
+        self.chk_tooltips.pack(side="left", padx=15)
         
-        btn_hide = ctk.CTkButton(self.frame_footer, text="Cacher l'UI", command=self.toggle_visibility, fg_color="transparent", border_width=1, width=70)
-        btn_hide.pack(side="right")
+        self.btn_hide = ctk.CTkButton(self.frame_footer, text=self.app.i18n.t("btn_hide_ui", "Cacher l'UI"), command=self.toggle_visibility, fg_color="transparent", border_width=1, width=70)
+        self.btn_hide.pack(side="right")
 
         frame_msg = ctk.CTkFrame(self.root, fg_color="transparent", height=20)
         frame_msg.pack(fill="x", padx=15, pady=(0, 5))
@@ -238,6 +236,14 @@ class OrganizerGUI:
         self.lbl_controls.configure(text=self.app.i18n.t("label_controls", "Contrôler :"))
         self.lbl_versions.configure(text=self.app.i18n.t("label_versions", "Versions :"))
         self.lbl_keyboard_shortcuts.configure(text=self.app.i18n.t("label_keyboard_shortcuts", "Raccourcis Clavier"))
+        self.lbl_volume.configure(text=self.app.i18n.t("label_volume", "🔊 Volume Roulette :"))
+        self.btn_close_all.configure(text=self.app.i18n.t("btn_close_team", "Fermer Team"))
+        self.btn_reset.configure(text=self.app.i18n.t("btn_reset_settings", "Reset Settings"))
+        self.lbl_accounts.configure(text=self.app.i18n.t("label_active_accounts", "Comptes actifs"))
+        self.btn_refresh.configure(text=self.app.i18n.t("btn_refresh", "Rafraîchir"))
+        self.btn_sort_win.configure(text=self.app.i18n.t("btn_sort_taskbar", "Trier Barre Windows"))
+        self.chk_tooltips.configure(text=self.app.i18n.t("label_tooltips", "Bulles"))
+        self.btn_hide.configure(text=self.app.i18n.t("btn_hide_ui", "Cacher l'UI"))
         for button in self.hotkey_btns.values():
             if button.cget("text") in {"Aucun", "None", "Nenhum"}:
                 button.configure(text=none_label)
