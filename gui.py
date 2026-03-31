@@ -126,7 +126,7 @@ class OrganizerGUI:
         
         self.btn_settings = ctk.CTkButton(self.header_f, text=self.app.i18n.t("header_settings", "⚙️ Paramètres"), fg_color="#34495e", hover_color="#2c3e50", width=120, command=self.open_settings)
         self.btn_settings.pack(side="right")
-        self.bind_tooltip(self.btn_settings, "Paramétrer la roue radiale")
+        self.bind_tooltip(self.btn_settings, self.app.i18n.t("tooltip_settings", "Paramétrer la roue radiale"))
 
         self.btn_tuto = ctk.CTkButton(self.header_f, text=self.app.i18n.t("header_tutorial", "🎓 Tuto"), fg_color="#8e44ad", hover_color="#9b59b6", width=80, command=self.launch_tutorial)
         self.btn_tuto.pack(side="right", padx=(0, 10))
@@ -134,7 +134,7 @@ class OrganizerGUI:
         # --- NOUVEAU BOUTON OFF ---
         self.btn_off = ctk.CTkButton(self.header_f, text=self.app.i18n.t("header_off", "🔴 OFF"), fg_color="#c0392b", hover_color="#e74c3c", width=60, command=self.app.quit_app)
         self.btn_off.pack(side="right", padx=(0, 10))
-        self.bind_tooltip(self.btn_off, "Fermer complètement DOSOFT")
+        self.bind_tooltip(self.btn_off, self.app.i18n.t("tooltip_off", "Fermer complètement DOSOFT"))
         # --------------------------
 
         self.frame_mode = ctk.CTkFrame(self.root)
@@ -155,22 +155,22 @@ class OrganizerGUI:
         self.combo_version.pack(side="left", padx=5, pady=5)
 
         self.var_autofocus = ctk.BooleanVar(value=cfg.get("auto_focus_retro", False))
-        self.chk_autofocus = ctk.CTkCheckBox(self.frame_mode, text="Auto-Focus 🔔", variable=self.var_autofocus, command=self.toggle_autofocus, width=110)
+        self.chk_autofocus = ctk.CTkCheckBox(self.frame_mode, text=self.app.i18n.t("label_auto_focus", "Auto-Focus 🔔"), variable=self.var_autofocus, command=self.toggle_autofocus, width=110)
         
         if cfg.get("game_version", "Unity") == "Rétro":
             self.chk_autofocus.pack(side="left", padx=(15, 5))
             
-        self.bind_tooltip(self.chk_autofocus, "Focus automatiquement la page Rétro lors d'une notification")
+        self.bind_tooltip(self.chk_autofocus, self.app.i18n.t("tooltip_auto_focus", "Focus automatiquement la page Rétro lors d'une notification"))
 
         self.frame_keys = ctk.CTkFrame(self.root)
         self.frame_keys.pack(fill="x", padx=15, pady=10)
         self.lbl_keyboard_shortcuts = ctk.CTkLabel(self.frame_keys, text=self.app.i18n.t("label_keyboard_shortcuts", "Raccourcis Clavier"), font=ctk.CTkFont(weight="bold"))
         self.lbl_keyboard_shortcuts.grid(row=0, column=0, columnspan=6, pady=5)
 
-        self.create_hotkey_row(self.frame_keys, "Précédent", "prev_key", 1, 0, "Focus perso précédent")
-        self.create_hotkey_row(self.frame_keys, "Suivant", "next_key", 1, 3, "Focus perso suivant")
-        self.create_hotkey_row(self.frame_keys, "Chef", "leader_key", 2, 0, "Reprendre focus sur le Chef")
-        self.create_hotkey_row(self.frame_keys, "Afficher UI", "toggle_app_key", 2, 3, "Masquer/Afficher l'app")
+        self.create_hotkey_row(self.frame_keys, self.app.i18n.t("hotkey_prev", "Précédent"), "prev_key", 1, 0, self.app.i18n.t("tooltip_prev", "Focus perso précédent"))
+        self.create_hotkey_row(self.frame_keys, self.app.i18n.t("hotkey_next", "Suivant"), "next_key", 1, 3, self.app.i18n.t("tooltip_next", "Focus perso suivant"))
+        self.create_hotkey_row(self.frame_keys, self.app.i18n.t("hotkey_leader", "Chef"), "leader_key", 2, 0, self.app.i18n.t("tooltip_leader", "Reprendre focus sur le Chef"))
+        self.create_hotkey_row(self.frame_keys, self.app.i18n.t("hotkey_toggle_ui", "Afficher UI"), "toggle_app_key", 2, 3, self.app.i18n.t("tooltip_toggle_ui", "Masquer/Afficher l'app"))
 
         self.frame_actions = ctk.CTkFrame(self.root)
         self.frame_actions.pack(fill="x", padx=15, pady=5)
@@ -198,7 +198,7 @@ class OrganizerGUI:
                                         fg_color="#2c3e50", hover_color="#1a252f", corner_radius=6,
                                         command=self.open_bind_manager)
         btn_manage_binds.pack(side="right", padx=5, pady=4)
-        self.bind_tooltip(btn_manage_binds, "Gérer les raccourcis avancés par personnage")
+        self.bind_tooltip(btn_manage_binds, self.app.i18n.t("tooltip_manage_binds", "Gérer les raccourcis avancés par personnage"))
 
         self.scroll_frame = ctk.CTkScrollableFrame(self.root)
         self.scroll_frame.pack(fill="both", expand=True, padx=15, pady=(5, 10))
@@ -244,6 +244,7 @@ class OrganizerGUI:
         self.btn_sort_win.configure(text=self.app.i18n.t("btn_sort_taskbar", "Trier Barre Windows"))
         self.chk_tooltips.configure(text=self.app.i18n.t("label_tooltips", "Bulles"))
         self.btn_hide.configure(text=self.app.i18n.t("btn_hide_ui", "Cacher l'UI"))
+        self.chk_autofocus.configure(text=self.app.i18n.t("label_auto_focus", "Auto-Focus 🔔"))
         for button in self.hotkey_btns.values():
             if button.cget("text") in {"Aucun", "None", "Nenhum"}:
                 button.configure(text=none_label)
@@ -262,8 +263,8 @@ class OrganizerGUI:
             self.app.config.save()
             
         rep = messagebox.askyesno(
-            "Tutoriel Vidéo",
-            "Voulez-vous ouvrir la vidéo de présentation sur YouTube dans votre navigateur web ?"
+            self.app.i18n.t("dialog_tutorial_title", "Tutoriel Vidéo"),
+            self.app.i18n.t("dialog_tutorial_text", "Voulez-vous ouvrir la vidéo de présentation sur YouTube dans votre navigateur web ?")
         )
         if rep:
             webbrowser.open("")
@@ -289,7 +290,7 @@ class OrganizerGUI:
 
     def trigger_sort_taskbar(self):
         self.app.logic.sort_taskbar()
-        self.show_temporary_message("🚀 Les pages ont été rangées avec succès !", "#9b59b6")
+        self.show_temporary_message(self.app.i18n.t("msg_sorted", "🚀 Les pages ont été rangées avec succès !"), "#9b59b6")
 
     def close_and_refresh(self, name):
         self.app.logic.close_account_window(name)
@@ -300,7 +301,7 @@ class OrganizerGUI:
         self.app.logic.close_all_active_accounts()
         time.sleep(0.5)
         self.original_app_refresh()
-        self.show_temporary_message("💥 La team a été fermée !", "#e74c3c")
+        self.show_temporary_message(self.app.i18n.t("msg_team_closed", "💥 La team a été fermée !"), "#e74c3c")
 
     def toggle_tooltips_setting(self):
         self.app.config.data["show_tooltips"] = self.var_tooltips.get()
@@ -368,31 +369,31 @@ class OrganizerGUI:
             btn_close = ctk.CTkButton(row_frame, text="✖", width=25, fg_color="#c0392b", hover_color="#e74c3c")
             btn_close.configure(command=lambda n=acc['name']: self.close_and_refresh(n))
             btn_close.pack(side="right", padx=(2, 5))
-            self.bind_tooltip(btn_close, "Fermer instantanément le jeu")
+            self.bind_tooltip(btn_close, self.app.i18n.t("tooltip_close_game", "Fermer instantanément le jeu"))
             
             is_leader = (acc['name'] == leader_name)
             leader_txt = "🌟" if is_leader else "☆"
             leader_color = "#f39c12" if is_leader else "transparent"
             btn_lead = ctk.CTkButton(row_frame, text=leader_txt, width=35, fg_color=leader_color, border_width=1, command=lambda n=acc['name']: self.set_leader(n))
             btn_lead.pack(side="right", padx=2)
-            self.bind_tooltip(btn_lead, "Définir comme Chef")
+            self.bind_tooltip(btn_lead, self.app.i18n.t("tooltip_set_leader", "Définir comme Chef"))
 
             team_val = acc.get('team', "Team 1")
             team_color = "#2980b9" if team_val == "Team 1" else "#c0392b"
             btn_team = ctk.CTkButton(row_frame, text="T1" if team_val == "Team 1" else "T2", width=35, fg_color=team_color)
             btn_team.configure(command=lambda n=acc['name'], b=btn_team: self.toggle_team_ui(n, b))
             btn_team.pack(side="right", padx=5)
-            self.bind_tooltip(btn_team, "Changer d'équipe (T1/T2)")
+            self.bind_tooltip(btn_team, self.app.i18n.t("tooltip_change_team", "Changer d'équipe (T1/T2)"))
 
             btn_down = ctk.CTkButton(row_frame, text="▼", width=25, fg_color="#34495e", hover_color="#2c3e50")
             btn_down.configure(command=lambda n=acc['name']: self.move_row(n, 1))
             btn_down.pack(side="right", padx=(2, 10))
-            self.bind_tooltip(btn_down, "Descendre dans l'initiative")
+            self.bind_tooltip(btn_down, self.app.i18n.t("tooltip_move_down", "Descendre dans l'initiative"))
             
             btn_up = ctk.CTkButton(row_frame, text="▲", width=25, fg_color="#34495e", hover_color="#2c3e50")
             btn_up.configure(command=lambda n=acc['name']: self.move_row(n, -1))
             btn_up.pack(side="right", padx=2)
-            self.bind_tooltip(btn_up, "Monter dans l'initiative")
+            self.bind_tooltip(btn_up, self.app.i18n.t("tooltip_move_up", "Monter dans l'initiative"))
 
             pos_values = [str(i+1) for i in range(len(accounts))]
             current_pos = str(idx + 1)
@@ -400,7 +401,7 @@ class OrganizerGUI:
             combo_pos.set(current_pos)
             combo_pos.configure(command=lambda val, n=acc['name']: self.change_position(n, val))
             combo_pos.pack(side="right", padx=(2, 5))
-            self.bind_tooltip(combo_pos, "Choisir la position exacte")
+            self.bind_tooltip(combo_pos, self.app.i18n.t("tooltip_exact_position", "Choisir la position exacte"))
 
     def toggle_autofocus(self):
         self.app.config.data["auto_focus_retro"] = self.var_autofocus.get()
@@ -421,7 +422,7 @@ class OrganizerGUI:
         
         btn_x = ctk.CTkButton(parent, text="✖", width=25, fg_color="#c0392b", hover_color="#e74c3c", command=lambda: self.clear_key(config_key, btn))
         btn_x.grid(row=row, column=col_offset+2, padx=(0, 10))
-        self.bind_tooltip(btn_x, "Effacer le raccourci")
+        self.bind_tooltip(btn_x, self.app.i18n.t("tooltip_clear_shortcut", "Effacer le raccourci"))
 
     def catch_key(self, config_key, btn, allow_mouse=False):
         if self.is_listening: return
@@ -455,7 +456,7 @@ class OrganizerGUI:
             def on_key_hook(e):
                 nonlocal captured_key, captured_mods
                 if e.event_type == keyboard.KEY_DOWN:
-                    if e.name not in ['alt', 'ctrl', 'shift', 'maj', 'right alt', 'right ctrl', 'left alt', 'left ctrl', 'menu', 'windows', 'cmd']:
+                    if e.name not in ['alt', 'ctrl', 'shift', 'maj', 'right alt', 'right ctrl', 'left alt', 'left ctrl', 'left shift', 'right shift', 'alt gr', 'menu', 'windows', 'cmd', 'left windows', 'right windows']:
                         current_mods = get_current_mods()
                         combined = list(set(mods_before_click + current_mods))
                         captured_mods = [m for m in ['ctrl', 'alt', 'shift'] if m in combined]
@@ -551,7 +552,7 @@ class OrganizerGUI:
         else:
             self.chk_autofocus.pack_forget() 
         self.original_app_refresh()
-        self.show_temporary_message(f"🔄 Mode {choice} activé !", "#3498db")
+        self.show_temporary_message(self.app.i18n.t("msg_mode_enabled", "🔄 Mode {choice} activé !").format(choice=choice), "#3498db")
 
     def on_mode_change(self, choice):
         self.app.logic.set_mode(choice)
@@ -576,7 +577,10 @@ class OrganizerGUI:
         self.original_app_refresh()
 
     def reset_all(self):
-        reponse = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir tout réinitialiser ?\n\nToutes vos touches seront perdues.")
+        reponse = messagebox.askyesno(
+            self.app.i18n.t("dialog_confirm_title", "Confirmation"),
+            self.app.i18n.t("dialog_reset_text", "Êtes-vous sûr de vouloir tout réinitialiser ?\n\nToutes vos touches seront perdues.")
+        )
         if reponse:
             self.app.config.reset_settings()
             self.original_app_refresh()
@@ -607,7 +611,7 @@ class CharManagerWindow(ctk.CTkToplevel):
         super().__init__(parent_gui.root)
         self.parent = parent_gui
         self.app = parent_gui.app
-        self.title("⚙️ Gestionnaire de Binds Avancé DOSOFT")
+        self.title(self.app.i18n.t("char_manager_title", "⚙️ Gestionnaire de Binds Avancé DOSOFT"))
         self.geometry("620x680")
         self.attributes("-topmost", True)
         self.grab_set() 
@@ -624,16 +628,19 @@ class CharManagerWindow(ctk.CTkToplevel):
         
         frame_mode = ctk.CTkFrame(frame_header, fg_color="transparent")
         frame_mode.pack(fill="x", pady=5)
-        ctk.CTkLabel(frame_mode, text="Mode :", font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15)
+        ctk.CTkLabel(frame_mode, text=self.app.i18n.t("char_manager_mode", "Mode :"), font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15)
         self.var_mode = ctk.StringVar(value=self.app.config.data.get("advanced_bind_mode", "cycle"))
         seg_mode = ctk.CTkSegmentedButton(frame_mode, values=["cycle", "bind"], variable=self.var_mode, command=self.on_mode_change)
         seg_mode.pack(side="left", padx=5)
 
         frame_prefix = ctk.CTkFrame(frame_header, fg_color="transparent")
         frame_prefix.pack(fill="x", pady=5)
-        ctk.CTkLabel(frame_prefix, text="Préfixe Global :", font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15)
-        self.var_mod = ctk.StringVar(value=self.app.config.data.get("advanced_bind_modifier", "ctrl"))
-        seg_mod = ctk.CTkSegmentedButton(frame_prefix, values=["aucun", "ctrl", "alt", "shift"], variable=self.var_mod)
+        ctk.CTkLabel(frame_prefix, text=self.app.i18n.t("char_manager_prefix", "Préfixe Global :"), font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15)
+        modifier_value = self.app.config.data.get("advanced_bind_modifier", "ctrl")
+        if modifier_value in ("aucun", "nenhum"):
+            modifier_value = "none"
+        self.var_mod = ctk.StringVar(value=modifier_value)
+        seg_mod = ctk.CTkSegmentedButton(frame_prefix, values=["none", "ctrl", "alt", "shift"], variable=self.var_mod)
         seg_mod.pack(side="left", padx=5)
         
         self.frame_desc = ctk.CTkFrame(self, fg_color="transparent")
@@ -647,7 +654,7 @@ class CharManagerWindow(ctk.CTkToplevel):
         self.entry_dict = {} 
         self.buttons_dict = {} 
 
-        btn_save = ctk.CTkButton(self, text="💾 Enregistrer les raccourcis", fg_color="#27ae60", hover_color="#2ecc71", command=self.save_all)
+        btn_save = ctk.CTkButton(self, text=self.app.i18n.t("char_manager_save", "💾 Enregistrer les raccourcis"), fg_color="#27ae60", hover_color="#2ecc71", command=self.save_all)
         btn_save.pack(pady=20)
 
         self.update_content()
@@ -673,7 +680,7 @@ class CharManagerWindow(ctk.CTkToplevel):
         def on_key(e):
             nonlocal captured
             if e.event_type == keyboard.KEY_DOWN:
-                if e.name not in ['alt', 'ctrl', 'shift', 'maj', 'right alt', 'right ctrl', 'left alt', 'left ctrl', 'menu', 'windows', 'cmd']:
+                if e.name not in ['alt', 'ctrl', 'shift', 'maj', 'right alt', 'right ctrl', 'left alt', 'left ctrl', 'left shift', 'right shift', 'alt gr', 'menu', 'windows', 'cmd', 'left windows', 'right windows']:
                     captured = e.name
 
         hook = keyboard.hook(on_key, suppress=True)
@@ -706,7 +713,7 @@ class CharManagerWindow(ctk.CTkToplevel):
         cfg = self.app.config.data
 
         if mode == "cycle":
-            self.lbl_desc.configure(text="Target immuable par place. (ex: Ligne 1 focus le 1er de l'initiative)")
+            self.lbl_desc.configure(text=self.app.i18n.t("char_manager_desc_cycle", "Target immuable par place. (ex: Ligne 1 focus le 1er de l'initiative)"))
             row_binds = cfg.get("cycle_row_binds", [])
             
             for i in range(8):
@@ -714,7 +721,8 @@ class CharManagerWindow(ctk.CTkToplevel):
                 frame_row.pack(fill="x", pady=2, padx=5)
                 
                 current_pseudo = active_list[i]['name'] if i < len(active_list) else "---"
-                ctk.CTkLabel(frame_row, text=f"Place n°{i+1}", font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15, pady=10)
+                row_label = self.app.i18n.t("char_manager_position", "Place n°{index}").format(index=i+1)
+                ctk.CTkLabel(frame_row, text=row_label, font=ctk.CTkFont(weight="bold")).pack(side="left", padx=15, pady=10)
                 ctk.CTkLabel(frame_row, text=f"({current_pseudo})", font=ctk.CTkFont(slant="italic")).pack(side="left", padx=5)
                 
                 try: full_bind = row_binds[i]
@@ -730,11 +738,11 @@ class CharManagerWindow(ctk.CTkToplevel):
                 btn_clear.pack(side="right", padx=5)
 
         elif mode == "bind":
-            self.lbl_desc.configure(text="Target fixe par pseudo (Même s'ils changent d'ordre)")
+            self.lbl_desc.configure(text=self.app.i18n.t("char_manager_desc_bind", "Target fixe par pseudo (Même s'ils changent d'ordre)"))
             char_binds = cfg.get("persistent_character_binds", {})
             
             if not active_list:
-                ctk.CTkLabel(self.scroll_list, text="Aucun personnage connecté détecté.", text_color="#e74c3c").pack(pady=50)
+                ctk.CTkLabel(self.scroll_list, text=self.app.i18n.t("char_manager_no_character", "Aucun personnage connecté détecté."), text_color="#e74c3c").pack(pady=50)
                 return
 
             is_retro = self.app.config.data.get("game_version", "Unity") == "Rétro"
@@ -762,7 +770,7 @@ class CharManagerWindow(ctk.CTkToplevel):
     def save_all(self):
         mode = self.var_mode.get()
         mod_prefix = self.var_mod.get()
-        prefix_str = f"{mod_prefix}+" if mod_prefix != "aucun" else ""
+        prefix_str = f"{mod_prefix}+" if mod_prefix != "none" else ""
         
         cfg = self.app.config.data
         cfg["advanced_bind_modifier"] = mod_prefix 
@@ -780,6 +788,6 @@ class CharManagerWindow(ctk.CTkToplevel):
                 cfg["persistent_character_binds"][pseudo] = prefix_str + base if base else ""
             
         self.app.config.save()
-        self.parent.show_temporary_message("✅ Raccourcis enregistrés avec succès !", "#2ecc71")
+        self.parent.show_temporary_message(self.app.i18n.t("msg_binds_saved", "✅ Raccourcis enregistrés avec succès !"), "#2ecc71")
         self.app.setup_hotkeys() 
         self.destroy()
