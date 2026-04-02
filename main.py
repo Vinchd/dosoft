@@ -440,44 +440,78 @@ class OrganizerApp:
         threading.Thread(target=run_async_loop, daemon=True).start()
 
     async def poll_notifications(self):
-        listener = UserNotificationListener.current
-        access = await listener.request_access_async()
-        if access != 1: return
-
-        seen_ids = set()
-        first_pass = True 
-
+        # Boucle globale pour relancer la connexion si le service Windows redémarre
         while True:
             try:
-                is_retro = self.config.data.get("game_version", "Unity") == "Rétro"
-                is_autofocus_on = self.config.data.get("auto_focus_retro", False)
-                
-                notifs = await listener.get_notifications_async(NotificationKinds.TOAST)
-                current_ids = set()
-                
-                for n in notifs:
-                    current_ids.add(n.id)
-                    if n.id not in seen_ids:
-                        seen_ids.add(n.id)
-                        if not first_pass and is_retro and is_autofocus_on:
-                            try:
-                                binding = n.notification.visual.bindings[0]
-                                texts = [t.text for t in binding.get_text_elements()]
-                                for ligne in texts:
-                                    if " - Dofus Retro" in ligne:
-                                        pseudo = ligne.split(" - ")[0].strip()
-                                        cycle_list = self.logic.get_cycle_list()
-                                        for index, acc in enumerate(cycle_list):
-                                            if acc['name'] == pseudo:
-                                                self.gui.root.after(0, self.logic.focus_window, acc['hwnd'])
-                                                self.current_idx = index
-                                                break
-                                        break 
-                            except Exception: pass
-                seen_ids.intersection_update(current_ids)
-                first_pass = False 
-            except Exception: pass
-            await asyncio.sleep(0.5) 
+                listener = UserNotificationListener.current
+                access = await listener.request_access_async()
+                if access != 1: return
+
+                seen_ids = set()
+                first_pass = True 
+
+                # Fonction asynchrone pour effacer la notification de Windows après 1 seconde
+                async def remove_notif_delayed(notif_id):
+                    await asyncio.sleep(1.0)
+                    try:
+                        listener.remove_notification(notif_id)
+                    except Exception:
+                        pass
+
+                # Boucle de lecture très rapide
+                while True:
+                    try:
+                        is_retro = self.config.data.get("game_version", "Unity") == "Rétro"
+                        is_autofocus_on = self.config.data.get("auto_focus_retro", False)
+                        
+                        notifs = await listener.get_notifications_async(NotificationKinds.TOAST)
+                        current_ids = set()
+                        
+                        for n in notifs:
+                            current_ids.add(n.id)
+                            # Si c'est une nouvelle notification...
+                            if n.id not in seen_ids:
+                                seen_ids.add(n.id)
+                                
+                                if not first_pass and is_retro and is_autofocus_on:
+                                    try:
+                                        binding = n.notification.visual.bindings[0]
+                                        texts = [t.text for t in binding.get_text_elements()]
+                                        
+                                        is_dofus_notif = False
+                                        
+                                        # On vérifie si c'est le jeu qui parle
+                                        for ligne in texts:
+                                            if " - Dofus Retro" in ligne:
+                                                is_dofus_notif = True
+                                                pseudo = ligne.split(" - ")[0].strip()
+                                                
+                                                cycle_list = self.logic.get_cycle_list()
+                                                for index, acc in enumerate(cycle_list):
+                                                    if acc['name'] == pseudo:
+                                                        self.gui.root.after(0, self.logic.focus_window, acc['hwnd'])
+                                                        self.current_idx = index
+                                                        break
+                                                break 
+                                        
+                                        # NOUVEAU : On clear la notification SEULEMENT si c'est Dofus
+                                        if is_dofus_notif:
+                                            asyncio.create_task(remove_notif_delayed(n.id))
+                                            
+                                    except Exception: pass
+                                    
+                        seen_ids.intersection_update(current_ids)
+                        first_pass = False 
+                    except Exception:
+                        # Casse la boucle interne en cas de perte de l'API Windows
+                        break 
+                    
+                    # Fréquence ultra réactive comme tu l'as demandé
+                    await asyncio.sleep(0.5) 
+
+            except Exception:
+                # Petite pause en cas d'erreur critique avant de relancer le listener
+                await asyncio.sleep(5)
                 
 # --- SYSTÈME DE VÉRIFICATION DE VERSION ---
 CURRENT_VERSION = "1.2.0" 
