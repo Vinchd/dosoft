@@ -142,7 +142,7 @@ class OrganizerGUI:
         self.header_f = ctk.CTkFrame(self.root, fg_color="transparent")
         self.header_f.pack(fill="x", padx=15, pady=(15, 5))
         
-        self.lbl_app_title = ctk.CTkLabel(self.header_f, text=self.app.i18n.t("app_title", "DOSOFT v1.1.1"), font=ctk.CTkFont(size=20, weight="bold"))
+        self.lbl_app_title = ctk.CTkLabel(self.header_f, text=self.app.i18n.t("app_title", "DOSOFT v1.2.0"), font=ctk.CTkFont(size=20, weight="bold"))
         self.lbl_app_title.pack(side="left")
         
         self.btn_settings = ctk.CTkButton(self.header_f, text=self.app.i18n.t("header_settings", "⚙️ Paramètres"), fg_color="#34495e", hover_color="#2c3e50", width=120, command=self.open_settings)
